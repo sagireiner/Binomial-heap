@@ -1,3 +1,5 @@
+import java.util.*;
+
 /**
  * BinomialHeap
  *
@@ -149,10 +151,11 @@ public class BinomialHeap
 			}
 			curr = curr.next;
 		}
-		// prev of minNode is now the last node
+		// if minNode is last, prev of minNode is now the last node
 		if (minNode == this.last) {
 			this.last = curr;
 		}
+		this.min = newMin;
 		// remove minNode from the list of trees
 		curr.next = minNode.next;
 
@@ -161,11 +164,11 @@ public class BinomialHeap
 		this.size -= (int) Math.pow(2, minNode.rank);
 		// if minNode has children, build a new heap from them and meld it with the heap
 		HeapNode child = minNode.child;
+
 		if (child != null) {
 			this.meld(new BinomialHeap(child));
 		}
 	}
-
 	/**
 	 * 
 	 * Return the minimal HeapItem
@@ -420,7 +423,54 @@ public class BinomialHeap
 
 		return smallTree;
 	}
-	
+
+	public void print() {
+		System.out.println("**********************************************************");
+		System.out.println("Binomial Heap:");
+		System.out.println("Size: " + size);
+
+		if (min != null) {
+			System.out.println("Minimum Node: " + min.item.key);
+		} else {
+			System.out.println("No minimum node.");
+		}
+
+		System.out.println("Heap Nodes:");
+		if (last != null) {
+			Set<HeapNode> visited = new HashSet<>();
+			printHeapNode(last, 0, visited);
+		} else {
+			System.out.println("No heap nodes.");
+		}
+		System.out.println("&******************************************************************");
+	} //TODO: don't forget to delete
+	private void printHeapNode(HeapNode node, int indentLevel, Set<HeapNode> visited) {
+		StringBuilder indent = new StringBuilder();
+		for (int i = 0; i < indentLevel; i++) {
+			indent.append("    ");
+		}
+
+		System.out.println(indent + "Key: " + node.item.key);
+		System.out.println(indent + "Info: " + node.item.info);
+		System.out.println(indent + "Rank: " + node.rank);
+
+		visited.add(node);
+
+		if (node.child != null && !visited.contains(node.child)) {
+			System.out.println(indent + "Child:");
+			printHeapNode(node.child, indentLevel + 1, visited);
+		}
+
+		if (node.next != null && !visited.contains(node.next)) {
+			System.out.println(indent + "Sibling:");
+			printHeapNode(node.next, indentLevel, visited);
+		}
+	} //TODO: don't forget to delete
+
+
+
+
+
 	/**
 	 * 
 	 * Return the number of elements in the heap
