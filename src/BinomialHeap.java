@@ -63,10 +63,73 @@ public class BinomialHeap
 	 */
 
 	public HeapItem insert(int key, String info) {
-		// create a new heap with one node and meld it with the heap
+		// create a new node and meld it with the heap
 		HeapItem item = new HeapItem(key, info);
-		this.meld(new BinomialHeap(new HeapNode(item)));
+		HeapNode node = new HeapNode(item);
+
+		// if the heap is empty
+		if (this.last == null){
+			this.last = node;
+			this.min = node;
+			this.size = 1;
+			this.numOfTrees = 1;
+			return item;
+		}
+		// add the node to the beginning of the heap
+		HeapNode tmp = this.last.next;
+		this.last.next = node;
+		node.next = tmp;
+
+		// update the min and size and number of trees
+		if (node.item.key < this.min.item.key){
+			this.min = node;
+		}
+		this.size++;
+		this.numOfTrees++;
+
+
+		HeapNode prev = this.last;
+		HeapNode currNode = node;
+		HeapNode nextNode = node.next;
+		// while the ranks are the same, link the trees
+		while (currNode.rank == nextNode.rank && nextNode != this.last){
+			tmp = nextNode.next;
+			currNode = linkTrees2(currNode, nextNode);
+			currNode.next = tmp;
+			prev.next = currNode;
+			nextNode = tmp;
+			numOfTrees--;
+		}
+
+		// if the last node has the same rank as the first node, link them
+		if (currNode.rank == nextNode.rank){
+			currNode = linkTrees2(currNode, nextNode);
+			currNode.next = currNode;
+			this.last = currNode;
+			numOfTrees--;
+		}
 		return item;
+	}
+
+	public HeapNode linkTrees2(HeapNode t1, HeapNode t2) {
+		HeapNode bigTree = t1;
+		HeapNode smallTree = t2;
+
+		if(t1.item.key < t2.item.key) {
+			bigTree=t2;
+			smallTree=t1;
+		}
+		smallTree.rank++;
+		if(smallTree.child!=null) {
+			bigTree.next = smallTree.child.next;
+			smallTree.child.next = bigTree;
+		}
+		else {
+			bigTree.next = bigTree;
+		}
+		smallTree.child = bigTree;
+		bigTree.parent = smallTree;
+		return smallTree;
 	}
 
 	/**
