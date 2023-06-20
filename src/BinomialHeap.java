@@ -400,11 +400,13 @@ public class BinomialHeap
 				this.size += heap2.size;
 			}
 		}
-		
-		
 		return;   		
 	}
-	
+
+	public HeapNode getLast() {
+		return last;
+	}
+
 	public HeapNode linkTrees(HeapNode t1, HeapNode t2) {
 		HeapNode bigTree = t1;
 		HeapNode smallTree = t2;
@@ -466,9 +468,6 @@ public class BinomialHeap
 			printHeapNode(node.next, indentLevel, visited);
 		}
 	} //TODO: don't forget to delete
-
-
-
 
 
 	/**
@@ -538,6 +537,29 @@ public class BinomialHeap
 			this.parent = null;
 			this.rank = 0;
 		}
+		public HeapItem getItem() {
+			return item;
+		}
+
+		public HeapNode getChild() {
+			return child;
+		}
+
+		public HeapNode getNext() {
+			return next;
+		}
+
+		public HeapNode getParent() {
+			return parent;
+		}
+
+		public int getRank() {
+			return rank;
+		}
+
+		public double getSubTreeSize() {
+			return Math.pow(2, this.rank);
+		}
 	}
 
 	/**
@@ -571,6 +593,14 @@ public class BinomialHeap
 			this.key = key;
 			this.info = info;
 			this.node = null;
+		}
+
+		public HeapNode getNode() {
+			return node;
+		}
+
+		public int getKey() {
+			return key;
 		}
 	}
 
