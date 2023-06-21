@@ -3,10 +3,10 @@ import java.util.*;
 public class Tester {
 
     public static final int MAXKEY = 1000; // keys are random value between 0 to MAXKEY exclude
-    public static final int STEPS = 10000; //the number of random actions to test on each heap
-    public static final int MAXMELD = 0;//maximum size of heap to meld
+    public static final int STEPS = 1000; //the number of random actions to test on each heap
+    public static final int MAXMELD = 1000;//maximum size of heap to meld
     public static final int TESTS = 1;//number of heaps tested
-    public static final int[] ACTIONS = {0,3};
+    public static final int[] ACTIONS = {0,1,2,3,4};
     // 0 - insert, 1 - deleteMIn, 2 - meld, 3 - decreaseKey, 4 - delete
 
 
