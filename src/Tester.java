@@ -3,9 +3,9 @@ import java.util.*;
 public class Tester {
 
     public static final int MAXKEY = 1000; // keys are random value between 0 to MAXKEY exclude
-    public static final int STEPS = 1000; //the number of random actions to test on each heap
+    public static final int STEPS = 10; //the number of random actions to test on each heap
     public static final int MAXMELD = 10;//maximum size of heap to meld
-    public static final int TESTS = 10;//number of heaps tested
+    public static final int TESTS = 10000;//number of heaps tested
     public static final int[] ACTIONS = {0,1,2,3,4};
     // 0 - insert, 1 - deleteMIn, 2 - meld, 3 - decreaseKey, 4 - delete
 
@@ -211,6 +211,7 @@ public class Tester {
         while (curr != node){
             siblings.add(curr);
             curr = curr.getNext();
+            if (siblings.contains(curr)) return siblings;
         }
         return siblings;
     }
