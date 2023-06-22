@@ -27,16 +27,18 @@ public class Testing {
     }
 
     public static void main(String[] args) {
-        int[] arr1 = {13, 4, 6, 25, 39, 16, 0, 32, 22, 20, 37, 15, 22};
-//        int[] arr2 = {25, 23, 5, 23, 4, 5, 5, 4, 3, 8, 28, 24, 38, 13, 23, 13, 37, 19};
+        int[] arr1 = {535};
+        int[] arr2 = {185, 81, 215, 508, 444, 175, 324, 304, 907, 245, 116, 114};
         int n = arr1.length;
-        List<Integer> list = arrTOList(arr1);
+        List<Integer> list1 = arrTOList(arr1);
+        BinomialHeap heap1 = new BinomialHeap();
         BinomialHeap heap2 = new BinomialHeap();
-        insertListToHeap(list,heap2);
+        List<Integer> list2 = arrTOList(arr2);
+        insertListToHeap(list1,heap1);
+        insertListToHeap(list2,heap2);
         BinomialHeap heap = new BinomialHeap();
-        heap.meld(heap2);
-
-        BinomialHeap.HeapItem item804 = heap.insert(14,"14");
+        heap.insert(535,"535");
+        heap.meld(heap1);
         heap.deleteMin();
     }
 }

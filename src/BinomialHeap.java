@@ -1,3 +1,4 @@
+import javax.swing.filechooser.FileSystemView;
 import java.util.*;
 
 /**
@@ -166,6 +167,7 @@ public class BinomialHeap
 		if (child != null) {
 			this.meld(new BinomialHeap(child));
 		}
+		this.min = findNewMIn();
 	}
 	/**
 	 * 
@@ -174,7 +176,19 @@ public class BinomialHeap
 	 */
 	public HeapItem findMin() {
 		return this.min.item;
-	} 
+	}
+
+	public HeapNode findNewMIn(){
+		HeapNode curr = this.last;
+		HeapNode newMin = curr;
+		do {
+			if (curr.item.key < newMin.item.key){
+				newMin = curr;
+			}
+			curr = curr.next;
+		} while (curr != this.last);
+		return newMin;
+	}
 
 	/**
 	 * 
@@ -498,6 +512,9 @@ public class BinomialHeap
 		return this.numOfTrees;
 	}
 
+	public HeapNode getMin() {
+		return this.min;
+	}
 	/**
 	 * Class implementing a node in a Binomial Heap.
 	 *  

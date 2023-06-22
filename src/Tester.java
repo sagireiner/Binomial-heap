@@ -2,10 +2,10 @@ import java.util.*;
 
 public class Tester {
 
-    public static final int MAXKEY = 40; // keys are random value between 0 to MAXKEY exclude
-    public static final int STEPS = 100; //the number of random actions to test on each heap
-    public static final int MAXMELD = 100;//maximum size of heap to meld
-    public static final int TESTS = 1;//number of heaps tested
+    public static final int MAXKEY = 1000; // keys are random value between 0 to MAXKEY exclude
+    public static final int STEPS = 1000; //the number of random actions to test on each heap
+    public static final int MAXMELD = 10;//maximum size of heap to meld
+    public static final int TESTS = 10;//number of heaps tested
     public static final int[] ACTIONS = {0,1,2,3,4};
     // 0 - insert, 1 - deleteMIn, 2 - meld, 3 - decreaseKey, 4 - delete
 
@@ -13,11 +13,7 @@ public class Tester {
 
     public static void main(String[] args) throws Exception{
         for(int i =0; i<TESTS; i++){
-            try {
-                randomSteps(STEPS);
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
+            randomSteps(STEPS);
         }
         System.out.println("\nDone!!!");
     }
@@ -30,66 +26,66 @@ public class Tester {
         BinomialHeap heap = new BinomialHeap();
         for(int i=0; i< numberOfSteps; i++){
             int ind = rnd.nextInt(ACTIONS.length);
-            switch (ACTIONS[ind]){
-                case 0:
+            switch (ACTIONS[ind]) {
+                case 0 -> {
                     int key = rnd.nextInt(MAXKEY);
                     steps.append("heap.insert(").append(key).append(",\"GG\");\n");
-                    heap.insert(key,"GG" );
+                    heap.insert(key, "GG");
                     size++;
                     keyslist.add(key);
-                    break;
-                case 1:
+                }
+                case 1 -> {
                     steps.append("heap.deleteMin();\n");
                     heap.deleteMin();
-                    if (size>0) size--;
+                    if (size > 0) size--;
                     Collections.sort(keyslist);
                     if (!keyslist.isEmpty()) keyslist.remove(0);
-                    break;
+                }
                 //need to add more
-                case 2:
-                    List<Integer> keys = randomKeysList(MAXMELD,MAXKEY);
-                    BinomialHeap B = crateHeap(keys);
+                case 2 -> {
+                    List<Integer> keys = randomKeysList();
+                    BinomialHeap B = createHeap(keys);
                     steps.append("heap.meld(").append(keys).append(")\n");
                     size += keys.size();
                     heap.meld(B);
                     keyslist.addAll(keys);
-                    break;
-                case 3:
+                }
+                case 3 -> {
                     if (heap.empty()) break;
-                    List<BinomialHeap.HeapNode> lst =  toList(heap);
+                    List<BinomialHeap.HeapNode> lst = toList(heap);
                     ind = rnd.nextInt(lst.size());
                     BinomialHeap.HeapItem item = lst.get(ind).getItem();
                     int key1 = item.getKey();
+                    int diff = (item.getKey() == 0) ? 0 : rnd.nextInt(item.getKey());
                     steps.append("heap.decreaseKey(").append(item.getKey()).append(")\n");
-                    int diff = (item.getKey() == 0)? 0: rnd.nextInt(item.getKey());
                     heap.decreaseKey(item, diff);
-                    keyslist.remove(keyslist.indexOf(key1));
-                    keyslist.add(key1-diff);
-                    break;
-                case 4:
+                    keyslist.remove((Integer) key1);
+                    keyslist.add(key1 - diff);
+                }
+                case 4 -> {
                     if (heap.empty()) break;
-                    List<BinomialHeap.HeapNode> lst1 =  toList(heap);
+                    List<BinomialHeap.HeapNode> lst1 = toList(heap);
                     ind = rnd.nextInt(lst1.size());
                     BinomialHeap.HeapItem item1 = lst1.get(ind).getItem();
                     int key2 = item1.getKey();
                     steps.append("heap.delete(").append(item1.getKey()).append(")\n");
                     heap.delete(item1);
-                    size --;
-                    keyslist.remove(keyslist.indexOf(key2));
-                    break;
+                    size--;
+                    keyslist.remove((Integer) key2);
+                }
             }
             try {
                 validityTest(heap);
             } catch (Exception e) {
                 System.out.println("\nSteps Taken:\n" + steps+ "\n");
                 System.out.println("\nHEAP: \n");
-                heap.print();
+                print(heap);
                 throw e;
             }
             if (size != heap.size()){
                 System.out.println("\nSteps Taken:  " + steps + "\n");
                 System.out.println("\nHEAP: \n");
-                heap.print();
+                print(heap);
                 throw new Exception("size is not what is should be");
             }
             List<Integer> heapKeys = keysList(heap);
@@ -98,7 +94,7 @@ public class Tester {
             if(!heapKeys.equals(keyslist)){
                 System.out.println("\nSteps Taken:  " + steps + "\n");
                 System.out.println("\nHEAP: \n");
-                heap.print();
+                print(heap);
                 System.out.println("Should be:" + keyslist);
                 System.out.println("What we got:" + heapKeys);
                 throw new Exception("KeysList do not match");
@@ -107,10 +103,12 @@ public class Tester {
     }
 
     public static void validityTest(BinomialHeap heap) throws Exception{
-//        if (toList(heap).size() != heap.size()) throw new Exception("problem with size()");
+//        if (!sizeTest(heap)) throw new Exception("problem with size()");
         if (heap.empty() != (heap.size() == 0)) throw new Exception("problem with empty()");
         if (heap.numTrees() != Integer.bitCount(heap.size())) throw new Exception("problem with numTrees()");
         if (heap.empty()) return;
+//        if (!heap.getMin().isRoot()) throw new Exception("min is not root");
+//        if (!heap.getLast().isRoot()) throw new Exception("last is not root");
         if (!itemNodeLink(heap)) throw new Exception("problem with item-node link");
         if (!treeSizeTest(heap)) throw new Exception("Problem with three size");
         if (!structureTest(heap)) throw new Exception("problem with heap structure");
@@ -120,6 +118,15 @@ public class Tester {
         if (!onlyOneEachTest(heap)) throw new Exception("trees of the same rank in heap found");
     }
 
+    private static boolean sizeTest(BinomialHeap heap){
+        if (toList(heap).size() != heap.size()) return false;
+        if (heap.size() == 0) return true;
+        int sumOfTreeSizes = 0;
+        for(BinomialHeap.HeapNode node: siblings(heap.getLast())){
+            sumOfTreeSizes += node.getSubTreeSize();
+        }
+        return heap.size() == sumOfTreeSizes;
+    }
     private static boolean treeSizeTest (BinomialHeap heap){
         for (BinomialHeap.HeapNode node: toList(heap)){
             if (node.getSubTreeSize() != Math.pow(2,node.getRank())) return false;
@@ -180,19 +187,19 @@ public class Tester {
 
     //***************************************************************************
 
-    private static BinomialHeap crateHeap (List<Integer> keys)    {
+    private static BinomialHeap createHeap(List<Integer> keys)    {
         BinomialHeap heap = new BinomialHeap();
         for (int key: keys) heap.insert(key,Integer.toString(key));
         return heap;
 
     }
 
-    private static List<Integer> randomKeysList (int maxLen,int maxVal){
+    private static List<Integer> randomKeysList (){
         Random rnd = new Random();
-        int  n = rnd.nextInt(maxLen);
+        int  n = rnd.nextInt(Tester.MAXMELD);
         List<Integer> keysList = new ArrayList<>();
         for(int i =0; i< n; i++){
-            keysList.add(rnd.nextInt(maxVal));
+            keysList.add(rnd.nextInt(Tester.MAXKEY));
         }
         return keysList;
     }
@@ -235,5 +242,47 @@ public class Tester {
             ret.add(node.getItem().getKey());
         }
         return ret;
+    }
+
+    //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+    public static void print(BinomialHeap heap) {
+        System.out.println("**********************************************************");
+        System.out.println("Binomial Heap:");
+        System.out.println("Size: " + heap.size());
+
+        if (heap.getMin() != null) {
+            System.out.println("Minimum Node: " + heap.getMin().item.key);
+        } else {
+            System.out.println("No minimum node.");
+        }
+
+        System.out.println("Heap Nodes:\n");
+        if (heap.getLast() != null) {
+            Set<BinomialHeap.HeapNode> visited = new HashSet<>();
+            printHeapNode(heap.getLast(), 0, visited);
+        } else {
+            System.out.println("No heap nodes.");
+        }
+        System.out.println("&********************************************************");
+    }
+    private static void printHeapNode(BinomialHeap.HeapNode node, int indentLevel, Set<BinomialHeap.HeapNode> visited) {
+        StringBuilder indent = new StringBuilder();
+        indent.append("    ".repeat(Math.max(0, indentLevel)));
+
+        System.out.println(indent + "Key: " + node.getItem().getKey());
+        System.out.println(indent + "Rank: " + node.getRank());
+
+        visited.add(node);
+
+        if (node.getChild() != null && !visited.contains(node.getChild())) {
+            System.out.println(indent + "Child:");
+            printHeapNode(node.getChild(), indentLevel + 1, visited);
+        }
+
+        if (node.getNext() != null && !visited.contains(node.getNext())) {
+            System.out.println(indent + "Sibling:");
+            printHeapNode(node.getNext(), indentLevel, visited);
+        }
     }
 }
