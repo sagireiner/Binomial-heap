@@ -1,14 +1,15 @@
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class Testing {
 
-    public static List<Integer> randomInsertion(int n){
+    public static List<Integer> randomList(int start, int end){
         List<Integer> list = new ArrayList<>();
-        for (int i = 0; i < n; i++) {
-            list.add((int)(Math.random()*100));
+        for (int i = start; i <= end; i++) {
+            list.add(i);
         }
+        Random rand = new Random(2);
+
+        Collections.shuffle(list);
         return list;
     }
     public static void insertListToHeap(List<Integer> list, BinomialHeap heap){
@@ -24,13 +25,13 @@ public class Testing {
         }
         return list;
     }
+
     public static void main(String[] args) {
+//        int[] arr = {1,2,3,4,5,6};
+//        List<Integer> list = arrTOList(arr);
         BinomialHeap heap = new BinomialHeap();
-//        List<Integer> list = randomInsertion(100);
-        int[] arr = {78, 91, 31, 19, 37, 43, 37, 88, 38, 81,22};
-        List<Integer> list = arrTOList(arr);
-        insertListToHeap(list,heap);
-        System.out.println(list);
-        System.out.println(Integer.toBinaryString(11));
+        heap.insert(1,"1");
+        heap.deleteMin();
+        heap.deleteMin();
     }
 }

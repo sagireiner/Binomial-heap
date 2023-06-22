@@ -9,6 +9,8 @@ import java.util.*;
 public class BinomialHeap
 {
 	public int size;
+	public int sumOfRanksDeleted = 0;
+	public int numberOfLinks = 0;
 
 	public HeapNode last;
 	public HeapNode min;
@@ -96,7 +98,7 @@ public class BinomialHeap
 		// while the ranks are the same, link the trees
 		while (currNode.rank == nextNode.rank && nextNode != this.last){
 			tmp = nextNode.next;
-			currNode = linkTrees2(currNode, nextNode);
+			currNode = linkTrees(currNode, nextNode);
 			currNode.next = tmp;
 			prev.next = currNode;
 			nextNode = tmp;
@@ -105,7 +107,7 @@ public class BinomialHeap
 
 		// if the last node has the same rank as the first node, link them
 		if (currNode.rank == nextNode.rank){
-			currNode = linkTrees2(currNode, nextNode);
+			currNode = linkTrees(currNode, nextNode);
 			currNode.next = currNode;
 			this.last = currNode;
 			numOfTrees--;
@@ -113,26 +115,6 @@ public class BinomialHeap
 		return item;
 	}
 
-	public HeapNode linkTrees2(HeapNode t1, HeapNode t2) {
-		HeapNode bigTree = t1;
-		HeapNode smallTree = t2;
-
-		if(t1.item.key < t2.item.key) {
-			bigTree=t2;
-			smallTree=t1;
-		}
-		smallTree.rank++;
-		if(smallTree.child!=null) {
-			bigTree.next = smallTree.child.next;
-			smallTree.child.next = bigTree;
-		}
-		else {
-			bigTree.next = bigTree;
-		}
-		smallTree.child = bigTree;
-		bigTree.parent = smallTree;
-		return smallTree;
-	}
 
 	/**
 	 * 
@@ -140,8 +122,13 @@ public class BinomialHeap
 	 *
 	 */
 	public void deleteMin() {
+		if (this.empty()) {
+			return;
+		}
 		HeapNode minNode = this.min;
 		HeapNode newMin = minNode.next;
+
+		sumOfRanksDeleted += minNode.rank;
 
 		// find the prev of minNode and the new min
 		HeapNode curr = minNode.next;
@@ -167,6 +154,10 @@ public class BinomialHeap
 
 		if (child != null) {
 			this.meld(new BinomialHeap(child));
+		}
+		else {
+			this.last = null;
+			this.min = null;
 		}
 	}
 	/**
@@ -245,7 +236,7 @@ public class BinomialHeap
 			this.size = heap2.size;
 			this.min = heap2.min;
 			this.last = heap2.last;
-			this.numOfTrees = 1;
+			this.numOfTrees = heap2.numOfTrees;
 			heap2.last = null;
 			heap2.min = null;
 		}
@@ -408,6 +399,7 @@ public class BinomialHeap
 	}
 
 	public HeapNode linkTrees(HeapNode t1, HeapNode t2) {
+		numberOfLinks++;
 		HeapNode bigTree = t1;
 		HeapNode smallTree = t2;
 
@@ -420,12 +412,13 @@ public class BinomialHeap
 			bigTree.next = smallTree.child.next;
 			smallTree.child.next = bigTree;
 		}
-		bigTree.parent = smallTree;
+		else {
+			bigTree.next = bigTree;
+		}
 		smallTree.child = bigTree;
-
+		bigTree.parent = smallTree;
 		return smallTree;
 	}
-
 	public void print() {
 		System.out.println("**********************************************************");
 		System.out.println("Binomial Heap:");
