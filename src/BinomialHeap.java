@@ -125,6 +125,14 @@ public class BinomialHeap
 		if (this.empty()) {
 			return;
 		}
+		if (this.size == 1) {
+			this.last = null;
+			this.min = null;
+			this.size = 0;
+			this.numOfTrees = 0;
+			return;
+		}
+
 		HeapNode minNode = this.min;
 		HeapNode newMin = minNode.next;
 
@@ -132,9 +140,12 @@ public class BinomialHeap
 
 		// find the prev of minNode and the new min
 		HeapNode curr = minNode.next;
-		while (curr.next != minNode) {
+		while (curr != minNode) {
 			if (curr.item.key < newMin.item.key) {
 				newMin = curr;
+			}
+			if (curr.next == minNode) {
+				break;
 			}
 			curr = curr.next;
 		}
@@ -154,10 +165,6 @@ public class BinomialHeap
 
 		if (child != null) {
 			this.meld(new BinomialHeap(child));
-		}
-		else {
-			this.last = null;
-			this.min = null;
 		}
 	}
 	/**
