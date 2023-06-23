@@ -347,11 +347,11 @@ public class BinomialHeap {
                             continue;
                         }
                         if (arrayH1[j] == null) {//if there is only in one heap, we link it with the temp merged since the carry is 1.
-                            tempMergedTree = linkTrees(arrayH2[j], tempMergedTree);
+                            tempMergedTree = linkTrees(tempMergedTree,arrayH2[j]);
                             continue;
                         }
                         if (arrayH2[j] == null) {
-                            tempMergedTree = linkTrees(arrayH1[j], tempMergedTree);
+                            tempMergedTree = linkTrees(tempMergedTree,arrayH1[j]);
                             continue;
                         }
                     }

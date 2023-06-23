@@ -53,26 +53,43 @@ public class Experiment {
 
     public static Map<Integer, Map<String, Double>> experiment2() {
         Map<Integer, Map<String, Double>> map = new HashMap<>();
-        for (int i = 1; i <= 1; i++) {
+        for (int i = 1; i <= 5; i++) {
             Map<String, Double> innerMap = new HashMap<>();
-//            int numberOfInsertions = (int) Math.pow(3, i + 5) - 1;
-            int numberOfInsertions = 10;
+            int numberOfInsertions = (int) Math.pow(3, i + 5) - 1;
             List<Integer> list = randomList(numberOfInsertions);
-            Double start = (double) System.nanoTime();
-            BinomialHeap heap = crateHeap(list);
-            Double end = (double) System.nanoTime();
             double mil = 1000000;
-            double time = (end - start) / mil;
-            deleteMin(numberOfInsertions / 2, heap);
-            Double start2 = (double) System.nanoTime();
-            double time2 = (start2 - end) / mil;
-            innerMap.put("Time", time+time2);
-            innerMap.put("Number of trees", (double) heap.numOfTrees);
-            innerMap.put("Number of links", (double) heap.numberOfLinks);
-            innerMap.put("Number of deletions", (double) heap.sumOfRanksDeleted);
-            map.put(numberOfInsertions, innerMap);
+            Double start = (double) System.nanoTime();
+            runExperiment(map, innerMap, numberOfInsertions, list, start, mil, numberOfInsertions/2);
         }
         return map;
+    }
+
+    public static Map<Integer, Map<String, Double>> experiment3() {
+        Map<Integer, Map<String, Double>> map = new HashMap<>();
+        for (int i = 1; i <= 5; i++) {
+            Map<String, Double> innerMap = new HashMap<>();
+            int numberOfInsertions = (int) Math.pow(3, i + 5) - 1;
+            List<Integer> list = sortedList(numberOfInsertions);
+            Collections.reverse(list);
+            Double start = (double) System.nanoTime();
+            double mil = 1000000;
+            double ItemToRemain = Math.pow(2,5)-1;
+            int numberOfDeletions = numberOfInsertions-(int)ItemToRemain;
+            runExperiment(map, innerMap, numberOfInsertions, list, start, mil,(int)numberOfDeletions);
+        }
+        return map;
+    }
+
+    private static void runExperiment(Map<Integer, Map<String, Double>> map, Map<String, Double> innerMap, int numberOfInsertions, List<Integer> list, Double start, double mil,int numberOfDeletions) {
+        BinomialHeap heap = crateHeap(list);
+        deleteMin(numberOfDeletions, heap);
+        Double end = (double) System.nanoTime();
+        double time = (end -start) / mil;
+        innerMap.put("Time",time );
+        innerMap.put("Number of trees", (double) heap.numOfTrees);
+        innerMap.put("Number of links", (double) heap.numberOfLinks);
+        innerMap.put("Number of deletions", (double) heap.sumOfRanksDeleted);
+        map.put(numberOfInsertions, innerMap);
     }
 }
 

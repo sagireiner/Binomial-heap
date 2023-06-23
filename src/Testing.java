@@ -27,24 +27,11 @@ public class Testing {
     }
 
     public static void main(String[] args) {
-        int[] arr1 = {57, 944, 697, 950, 945, 13, 139};
-        int[] arr2 = {13};
-        int[] arr3 = {703, 91};
-        List<Integer> list1 = arrTOList(arr1);
-        List<Integer> list2 = arrTOList(arr2);
-        List<Integer> list3 = arrTOList(arr3);
-        BinomialHeap heap1 = new BinomialHeap();
-        BinomialHeap heap2 = new BinomialHeap();
-        BinomialHeap heap3 = new BinomialHeap();
-        insertListToHeap(list1,heap1);
-        insertListToHeap(list2,heap2);
-        insertListToHeap(list3,heap3);
-        BinomialHeap heap = new BinomialHeap();
-        heap.insert(778,"gg");
-        heap.deleteMin();
-        heap.meld(heap1);
-        heap.meld(heap2);
-        heap.meld(heap3);
-        heap.deleteMin();
+        Map<Integer, Map<String, Double>> map1 = new HashMap<>();
+        Map<Integer, Map<String, Double>> map2 = new HashMap<>();
+        Map<Integer, Map<String, Double>> map3 = new HashMap<>();
+        map1 = Experiment.experiment1();
+        map2 = Experiment.experiment2();
+        map3 = Experiment.experiment3();
     }
 }

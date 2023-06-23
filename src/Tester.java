@@ -2,10 +2,10 @@ import java.util.*;
 
 public class Tester {
 
-    public static final int MAXKEY = 1000; // keys are random value between 0 to MAXKEY exclude
-    public static final int STEPS = 10; //the number of random actions to test on each heap
-    public static final int MAXMELD = 10;//maximum size of heap to meld
-    public static final int TESTS = 10000;//number of heaps tested
+    public static final int MAXKEY = 10000; // keys are random value between 0 to MAXKEY exclude
+    public static final int STEPS = 1000; //the number of random actions to test on each heap
+    public static final int MAXMELD = 100;//maximum size of heap to meld
+    public static final int TESTS = 10;//number of heaps tested
     public static final int[] ACTIONS = {0,1,2,3,4};
     // 0 - insert, 1 - deleteMIn, 2 - meld, 3 - decreaseKey, 4 - delete
 
@@ -13,6 +13,7 @@ public class Tester {
 
     public static void main(String[] args) throws Exception{
         for(int i =0; i<TESTS; i++){
+            System.out.println(i);
             randomSteps(STEPS);
         }
         System.out.println("\nDone!!!");
@@ -103,7 +104,7 @@ public class Tester {
     }
 
     public static void validityTest(BinomialHeap heap) throws Exception{
-//        if (!sizeTest(heap)) throw new Exception("problem with size()");
+        if (!sizeTest(heap)) throw new Exception("problem with size()");
         if (heap.empty() != (heap.size() == 0)) throw new Exception("problem with empty()");
         if (heap.numTrees() != Integer.bitCount(heap.size())) throw new Exception("problem with numTrees()");
         if (heap.empty()) return;
