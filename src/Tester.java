@@ -253,8 +253,8 @@ public class Tester {
         System.out.println("Binomial Heap:");
         System.out.println("Size: " + heap.size());
 
-        if (heap.getMin() != null) {
-            System.out.println("Minimum Node: " + heap.getMin().item.key);
+        if (heap.findMin() != null) {
+            System.out.println("Minimum Node: " + heap.findMin().key);
         } else {
             System.out.println("No minimum node.");
         }

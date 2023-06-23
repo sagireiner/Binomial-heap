@@ -1,6 +1,3 @@
-import javax.swing.filechooser.FileSystemView;
-import java.util.*;
-
 /**
  * BinomialHeap
  * <p>
@@ -118,6 +115,7 @@ public class BinomialHeap {
         if (this.empty()) {
             return;
         }
+        // if there is only one node in the heap
         if (this.size == 1) {
             this.last = null;
             this.min = null;
@@ -248,150 +246,148 @@ public class BinomialHeap {
 
         //if both heaps aren't empty
         if (length1 != 0 && length2 != 0) {
-            if (heap2.size == -11) {
-                System.out.println("fix");
-            } else {
-                int carry = 0; //this will be the carry in the binary addition later.
-                int biggestLength = Math.max(length1, length2);
-                if (this.min.item.key > heap2.min.item.key)
-                    this.min = heap2.min;
 
-                HeapNode firstInHeap1 = this.last.next;
-                StringBuilder binHeap1 = new StringBuilder(Integer.toBinaryString(this.size));
-                binHeap1.reverse();
-                char[] charsHeap1 = new char[binHeap1.length()];
-                binHeap1.getChars(0, binHeap1.length(), charsHeap1, 0);
+            int carry = 0; //this will be the carry in the binary addition later.
+            int biggestLength = Math.max(length1, length2);
+            if (this.min.item.key > heap2.min.item.key)
+                this.min = heap2.min;
 
-                HeapNode firstInHeap2 = heap2.last.next;
-                StringBuilder binHeap2 = new StringBuilder(Integer.toBinaryString(heap2.size));
-                binHeap2.reverse();
-                char[] charsHeap2 = new char[binHeap2.length()];
-                binHeap2.getChars(0, binHeap2.length(), charsHeap2, 0);
+            HeapNode firstInHeap1 = this.last.next;
+            StringBuilder binHeap1 = new StringBuilder(Integer.toBinaryString(this.size));
+            binHeap1.reverse();
+            char[] charsHeap1 = new char[binHeap1.length()];
+            binHeap1.getChars(0, binHeap1.length(), charsHeap1, 0);
 
-                //create arrays for each heap (the array's values will be the roots of trees in the heap)
-                //create additional array for the final merged list
-                HeapNode[] arrayH1 = new HeapNode[biggestLength];
-                HeapNode[] arrayH2 = new HeapNode[biggestLength];
-                HeapNode[] finalHeapArray = new HeapNode[biggestLength + 1];
+            HeapNode firstInHeap2 = heap2.last.next;
+            StringBuilder binHeap2 = new StringBuilder(Integer.toBinaryString(heap2.size));
+            binHeap2.reverse();
+            char[] charsHeap2 = new char[binHeap2.length()];
+            binHeap2.getChars(0, binHeap2.length(), charsHeap2, 0);
 
-                int i = 0;
-                for (char c1 : charsHeap1) {
+            //create arrays for each heap (the array's values will be the roots of trees in the heap)
+            //create additional array for the final merged list
+            HeapNode[] arrayH1 = new HeapNode[biggestLength];
+            HeapNode[] arrayH2 = new HeapNode[biggestLength];
+            HeapNode[] finalHeapArray = new HeapNode[biggestLength + 1];
 
-                    //if there is a tree of size i in heap1, enter the tree root in place i in the array.
-                    //then move on to the next tree root in the heap
-                    if (c1 == '1') {
-                        arrayH1[i] = firstInHeap1;
-                        firstInHeap1 = firstInHeap1.next;
-                    } else {
-                        arrayH1[i] = null;
-                    }
-                    i++;
-                }
+            int i = 0;
+            for (char c1 : charsHeap1) {
 
-                //do the same for heap2, reset i in order to do that and not create a new variable.
-                i = 0;
-                for (char c2 : charsHeap2) {
-                    //if there is a tree of size i in heap2, enter the tree root in place i in the array.
-                    //then move on to the next tree root in the heap
-                    if (c2 == '1') {
-                        arrayH2[i] = firstInHeap2;
-                        firstInHeap2 = firstInHeap2.next;
-                    } else {
-                        arrayH2[i] = null;
-                    }
-                    i++;
-                }
-
-                //now we want to fill the final array to be the array of the merged heaps the same way we created arrays for heap1,heap2
-                //that means if in the merged heap we have a tree of size i, the root will be in arr[i], and else there'll be null.
-
-                HeapNode tempMergedTree = null;
-                boolean firstTime = true;
-
-
-                for (int j = 0; j < biggestLength; j++) {
-
-                    //in the binary addition there is no carry
-                    if (carry == 0) {
-
-                        if (arrayH1[j] != null && arrayH2[j] != null) {//if both heaps have a tree of size j link them
-                            tempMergedTree = linkTrees(arrayH1[j], arrayH2[j]);
-                            carry = 1;//in binary terms, we did 1+1 so we have to carry 1
-                            continue;
-                        }
-                        if (arrayH1[j] == null && arrayH2[j] == null) {//both don't have a tree of size j
-                            finalHeapArray[j] = null; //because the carry is 0
-                            continue;
-                        }
-                        if (arrayH1[j] == null) {//if there is only in one heap, put it in the final since the carry is 0.
-                            finalHeapArray[j] = arrayH2[j];
-                            continue;
-                        }
-                        if (arrayH2[j] == null) {
-                            finalHeapArray[j] = arrayH1[j];
-                            continue;
-                        }
-                    }
-                    //if the carry in the binary addition is 1
-                    else {
-
-                        if (arrayH1[j] != null && arrayH2[j] != null) {//if both heaps have a tree of size j link them
-                            finalHeapArray[j] = tempMergedTree;
-                            tempMergedTree = linkTrees(arrayH1[j], arrayH2[j]);
-                            continue;
-                        }
-                        if (arrayH1[j] == null && arrayH2[j] == null) {//both don't have a tree of size j
-                            //because the carry is 1, we can now put the merged tree in the final heap because there isnt a tree of that siz
-                            finalHeapArray[j] = tempMergedTree;
-                            carry = 0;
-                            continue;
-                        }
-                        if (arrayH1[j] == null) {//if there is only in one heap, we link it with the temp merged since the carry is 1.
-                            tempMergedTree = linkTrees(tempMergedTree,arrayH2[j]);
-                            continue;
-                        }
-                        if (arrayH2[j] == null) {
-                            tempMergedTree = linkTrees(tempMergedTree,arrayH1[j]);
-                            continue;
-                        }
-                    }
-                }
-
-                if (carry == 1) {
-                    finalHeapArray[biggestLength] = tempMergedTree;
-                }
-                // now have a representative array of the final heap.
-                // remove the nulls padding it and  link the tree roots.
-                int countNotNull = 0;
-                for (int j = 0; j < finalHeapArray.length; j++) {
-                    if (finalHeapArray[j] != null)
-                        countNotNull++;
-                }
-
-                HeapNode[] finalHeapArrayRootsOnly = new HeapNode[countNotNull];
-                int arrLength = 0;
-                for (int j = 0; j < finalHeapArray.length; j++) {
-                    if (finalHeapArray[j] != null) {
-                        finalHeapArrayRootsOnly[arrLength] = finalHeapArray[j];
-                        arrLength++;
-                    }
-                }
-
-                if (arrLength == 1) {
-                    finalHeapArrayRootsOnly[0].next = finalHeapArrayRootsOnly[0];
-                    this.last = finalHeapArrayRootsOnly[0];
+                //if there is a tree of size i in heap1, enter the tree root in place i in the array.
+                //then move on to the next tree root in the heap
+                if (c1 == '1') {
+                    arrayH1[i] = firstInHeap1;
+                    firstInHeap1 = firstInHeap1.next;
                 } else {
-                    //link every root to next one, without linking the last root.
-                    for (int j = 0; j < arrLength - 1; j++) {
-                        finalHeapArrayRootsOnly[j].next = finalHeapArrayRootsOnly[j + 1];
+                    arrayH1[i] = null;
+                }
+                i++;
+            }
+
+            //do the same for heap2, reset i in order to do that and not create a new variable.
+            i = 0;
+            for (char c2 : charsHeap2) {
+                //if there is a tree of size i in heap2, enter the tree root in place i in the array.
+                //then move on to the next tree root in the heap
+                if (c2 == '1') {
+                    arrayH2[i] = firstInHeap2;
+                    firstInHeap2 = firstInHeap2.next;
+                } else {
+                    arrayH2[i] = null;
+                }
+                i++;
+            }
+
+            //now we want to fill the final array to be the array of the merged heaps the same way we created arrays for heap1,heap2
+            //that means if in the merged heap we have a tree of size i, the root will be in arr[i], and else there'll be null.
+
+            HeapNode tempMergedTree = null;
+            boolean firstTime = true;
+
+
+            for (int j = 0; j < biggestLength; j++) {
+
+                //in the binary addition there is no carry
+                if (carry == 0) {
+
+                    if (arrayH1[j] != null && arrayH2[j] != null) {//if both heaps have a tree of size j link them
+                        tempMergedTree = linkTrees(arrayH1[j], arrayH2[j]);
+                        carry = 1;//in binary terms, we did 1+1 so we have to carry 1
+                        continue;
+                    }
+                    if (arrayH1[j] == null && arrayH2[j] == null) {//both don't have a tree of size j
+                        finalHeapArray[j] = null; //because the carry is 0
+                        continue;
+                    }
+                    if (arrayH1[j] == null) {//if there is only in one heap, put it in the final since the carry is 0.
+                        finalHeapArray[j] = arrayH2[j];
+                        continue;
+                    }
+                    if (arrayH2[j] == null) {
+                        finalHeapArray[j] = arrayH1[j];
+                        continue;
                     }
                 }
-                //link the last root to the first root
-                finalHeapArrayRootsOnly[arrLength - 1].next = finalHeapArrayRootsOnly[0];
-                this.last = finalHeapArrayRootsOnly[arrLength - 1];
-                this.numOfTrees = arrLength;
-                this.size += heap2.size;
+                //if the carry in the binary addition is 1
+                else {
+
+                    if (arrayH1[j] != null && arrayH2[j] != null) {//if both heaps have a tree of size j link them
+                        finalHeapArray[j] = tempMergedTree;
+                        tempMergedTree = linkTrees(arrayH1[j], arrayH2[j]);
+                        continue;
+                    }
+                    if (arrayH1[j] == null && arrayH2[j] == null) {//both don't have a tree of size j
+                        //because the carry is 1, we can now put the merged tree in the final heap because there isnt a tree of that siz
+                        finalHeapArray[j] = tempMergedTree;
+                        carry = 0;
+                        continue;
+                    }
+                    if (arrayH1[j] == null) {//if there is only in one heap, we link it with the temp merged since the carry is 1.
+                        tempMergedTree = linkTrees(tempMergedTree, arrayH2[j]);
+                        continue;
+                    }
+                    if (arrayH2[j] == null) {
+                        tempMergedTree = linkTrees(tempMergedTree, arrayH1[j]);
+                        continue;
+                    }
+                }
             }
+
+            if (carry == 1) {
+                finalHeapArray[biggestLength] = tempMergedTree;
+            }
+            // now have a representative array of the final heap.
+            // remove the nulls padding it and  link the tree roots.
+            int countNotNull = 0;
+            for (int j = 0; j < finalHeapArray.length; j++) {
+                if (finalHeapArray[j] != null)
+                    countNotNull++;
+            }
+
+            HeapNode[] finalHeapArrayRootsOnly = new HeapNode[countNotNull];
+            int arrLength = 0;
+            for (int j = 0; j < finalHeapArray.length; j++) {
+                if (finalHeapArray[j] != null) {
+                    finalHeapArrayRootsOnly[arrLength] = finalHeapArray[j];
+                    arrLength++;
+                }
+            }
+
+            if (arrLength == 1) {
+                finalHeapArrayRootsOnly[0].next = finalHeapArrayRootsOnly[0];
+                this.last = finalHeapArrayRootsOnly[0];
+            } else {
+                //link every root to next one, without linking the last root.
+                for (int j = 0; j < arrLength - 1; j++) {
+                    finalHeapArrayRootsOnly[j].next = finalHeapArrayRootsOnly[j + 1];
+                }
+            }
+            //link the last root to the first root
+            finalHeapArrayRootsOnly[arrLength - 1].next = finalHeapArrayRootsOnly[0];
+            this.last = finalHeapArrayRootsOnly[arrLength - 1];
+            this.numOfTrees = arrLength;
+            this.size += heap2.size;
+
         }
         if (this.last != null) {
             this.min = findNewMIn();
@@ -424,51 +420,6 @@ public class BinomialHeap {
         return smallTree;
     }
 
-    public void print() {
-        System.out.println("**********************************************************");
-        System.out.println("Binomial Heap:");
-        System.out.println("Size: " + size);
-
-        if (min != null) {
-            System.out.println("Minimum Node: " + min.item.key);
-        } else {
-            System.out.println("No minimum node.");
-        }
-
-        System.out.println("Heap Nodes:");
-        if (last != null) {
-            Set<HeapNode> visited = new HashSet<>();
-            printHeapNode(last, 0, visited);
-        } else {
-            System.out.println("No heap nodes.");
-        }
-        System.out.println("&******************************************************************");
-    } //TODO: don't forget to delete
-
-    private void printHeapNode(HeapNode node, int indentLevel, Set<HeapNode> visited) {
-        StringBuilder indent = new StringBuilder();
-        for (int i = 0; i < indentLevel; i++) {
-            indent.append("    ");
-        }
-
-        System.out.println(indent + "Key: " + node.item.key);
-        System.out.println(indent + "Info: " + node.item.info);
-        System.out.println(indent + "Rank: " + node.rank);
-
-        visited.add(node);
-
-        if (node.child != null && !visited.contains(node.child)) {
-            System.out.println(indent + "Child:");
-            printHeapNode(node.child, indentLevel + 1, visited);
-        }
-
-        if (node.next != null && !visited.contains(node.next)) {
-            System.out.println(indent + "Sibling:");
-            printHeapNode(node.next, indentLevel, visited);
-        }
-    } //TODO: don't forget to delete
-
-
     /**
      * Return the number of elements in the heap
      */
@@ -489,10 +440,6 @@ public class BinomialHeap {
      */
     public int numTrees() {
         return this.numOfTrees;
-    }
-
-    public HeapNode getMin() {
-        return this.min;
     }
 
     /**
@@ -585,6 +532,11 @@ public class BinomialHeap {
 
         public HeapNode getNode() {
             return node;
+        }
+
+
+        public String getInfo() {
+            return info;
         }
 
         public int getKey() {
