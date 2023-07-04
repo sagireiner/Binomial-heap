@@ -27,6 +27,7 @@ public class BinomialHeap {
 
     /**
      * Constructor for BinomialHeap with a given node
+     * complexity: O(log(rank of node))
      */
 
     public BinomialHeap(HeapNode node) {
@@ -53,6 +54,7 @@ public class BinomialHeap {
      * pre: key > 0
      * <p>
      * Insert (key,info) into the heap and return the newly generated HeapItem.
+     * complexity: O(number adding in binary representation of n
      */
 
     public HeapItem insert(int key, String info) {
@@ -107,6 +109,7 @@ public class BinomialHeap {
 
     /**
      * Delete the minimal item
+     * complexity: O(logn)
      */
     public void deleteMin() {
         if (this.empty()) {
@@ -156,6 +159,7 @@ public class BinomialHeap {
 
     /**
      * Return the minimal HeapItem
+     * complexity: O(1)
      */
     public HeapItem findMin() {
         return this.min.item;
@@ -175,8 +179,8 @@ public class BinomialHeap {
 
     /**
      * pre: 0<diff<item.key
-     * <p>
      * Decrease the key of item by diff and fix the heap.
+     * complexity: O(logn)
      */
     public void decreaseKey(HeapItem item, int diff) {
         item.key -= diff;
@@ -209,6 +213,7 @@ public class BinomialHeap {
 
     /**
      * Delete the item from the heap.
+     * complexity: O(logn)
      */
     public void delete(HeapItem item) {
         // decrease the key of the item to be smaller than the min and delete the min
@@ -218,6 +223,8 @@ public class BinomialHeap {
 
     /**
      * Meld the heap with heap2
+     * complexity: O(logn)
+     *
      */
     public void meld(BinomialHeap heap2) {
         int length1 = Integer.toBinaryString(this.size).length();
@@ -415,6 +422,7 @@ public class BinomialHeap {
 
     /**
      * Return the number of elements in the heap
+     * Complexity: O(1)
      */
     public int size() {
         return this.size;
@@ -423,6 +431,7 @@ public class BinomialHeap {
     /**
      * The method returns true if and only if the heap
      * is empty.
+     * Complexity: O(1)
      */
     public boolean empty() {
         return this.min == null;
@@ -430,6 +439,7 @@ public class BinomialHeap {
 
     /**
      * Return the number of trees in the heap.
+     * Complexity: O(1)
      */
     public int numTrees() {
         return this.numOfTrees;
