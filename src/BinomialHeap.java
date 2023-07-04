@@ -6,8 +6,6 @@
  */
 public class BinomialHeap {
     public int size;
-    public int sumOfRanksDeleted = 0;
-    public int numberOfLinks = 0;
 
     public HeapNode last;
     public HeapNode min;
@@ -36,7 +34,6 @@ public class BinomialHeap {
         node.parent = null;
         this.last = node;
         this.min = node;
-
         // the size of the heap is 2^(rank+1)-1 and the number of trees is rank+1
         this.size = (int) Math.pow(2, node.rank + 1) - 1;
         this.numOfTrees = node.rank + 1;
@@ -126,9 +123,6 @@ public class BinomialHeap {
 
         HeapNode minNode = this.min;
         HeapNode newMin = minNode.next;
-
-        sumOfRanksDeleted += minNode.rank;
-
         // find the prev of minNode and the new min
         HeapNode curr = minNode.next;
         while (curr != minNode) {
@@ -400,7 +394,6 @@ public class BinomialHeap {
 
 
     public HeapNode linkTrees(HeapNode t1, HeapNode t2) {
-        numberOfLinks++;
         HeapNode bigTree = t1;
         HeapNode smallTree = t2;
 
@@ -495,10 +488,6 @@ public class BinomialHeap {
 
         public int getRank() {
             return rank;
-        }
-
-        public double getSubTreeSize() {
-            return Math.pow(2, this.rank);
         }
     }
 
